@@ -140,6 +140,13 @@ CFE_Status_t MM_LookupSymCmd(const MM_LookupSymCmd_t *Msg) {
       CFE_EVS_SendEvent(MM_SYM_LOOKUP_INF_EID, CFE_EVS_EventType_INFORMATION,
                         "Symbol Lookup Command: Name = '%s' Addr = %p", SymName,
                         (void *)ResolvedAddr);
+
+      /* Update Symbol Look Up Tlm */
+      strncpy(MM_AppData.SymLookupPacket.Payload.SymName, SymName, sizeof(MM_AppData.SymLookupPacket.Payload.SymName));
+
+      MM_AppData.SymLookupPacket.Payload.Address = ResolvedAddr;
+      CFE_SB_TimeStampMsg(CFE_MSG_PTR(MM_AppData.SymLookupPacket.TlmHeader));
+      CFE_SB_TransmitMsg(CFE_MSG_PTR(MM_AppData.SymLookupPacket.TlmHeader), true);
     } else {
       MM_AppData.HkTlm.Payload.ErrCounter++;
       CFE_EVS_SendEvent(MM_SYMNAME_ERR_EID, CFE_EVS_EventType_ERROR,

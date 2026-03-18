@@ -20,7 +20,7 @@ b) length of data written
 c) value of the data written
 ",Confirms memory poke operations
 MM2000.2,MM2000.2,"When MM receives a Poke command, if the data size is not 8, 16, or 32 bits, MM shall reject the command.",Ensure writes happen at 8-bit boundaries
-MM2002,MM2002,"Upon receipt of a Peek command, MM shall read 8, 16, or 32 bits of data from the command-specified RAM address and telemeter the following information in the HK packet + issue an event message containing:
+MM2002,MM2002,"Upon receipt of a Peek command, MM shall read 8, 16, or 32 bits of data from the command-specified RAM address and telemeter the following information in the HK and Peek packet + issue an event message containing:
 a) address read
 b) length of data read
 c) value of the data read

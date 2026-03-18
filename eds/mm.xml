@@ -208,6 +208,22 @@
                 </EntryList>
             </ContainerDataType>
 
+            <ContainerDataType name="PeekPacket_Payload" shortDescription="Peek Packet Payload">
+                <EntryList>
+                    <Entry name="MemType" type="MemType" shortDescription="Memory type"/>
+                    <Entry name="DataValue" type="BASE_TYPES/uint32" shortDescription="Data from peek"/>
+                    <Entry name="Address" type="MemAddress" shortDescription="Fully resolved address"/>
+                    <Entry name="BytesProcessed" type="MemSize" shortDescription="Bytes processed"/>
+                </EntryList>
+            </ContainerDataType>
+
+            <ContainerDataType name="SymLookupPacket_Payload" shortDescription="Symbol Lookup Packet Payload">
+                <EntryList>
+                    <Entry name="SymName" type="SymName" shortDescription="Symbol Name"/>
+                    <Entry name="Address" type="MemAddress" shortDescription="Fully resolved address"/>
+                </EntryList>
+            </ContainerDataType>
+
             <!-- COMMANDS -->
 
             <ContainerDataType name="CommandBase" baseType="CFE_HDR/CommandHeader"/>
@@ -343,6 +359,18 @@
                     <Entry type="HkTlm_Payload" name="Payload"/>
                 </EntryList>
             </ContainerDataType>
+
+            <ContainerDataType name="PeekPacket" baseType="CFE_HDR/TelemetryHeader">
+                <EntryList>
+                    <Entry type="PeekPacket_Payload" name="Payload"/>
+                </EntryList>
+            </ContainerDataType>
+
+            <ContainerDataType name="SymLookupPacket" baseType="CFE_HDR/TelemetryHeader">
+                <EntryList>
+                    <Entry type="SymLookupPacket_Payload" name="Payload"/>
+                </EntryList>
+            </ContainerDataType>
         </DataTypeSet>
 
         <ComponentSet>
@@ -365,6 +393,18 @@
                             <GenericTypeMap name="TelemetryDataType" type="HkTlm" />
                         </GenericTypeMapSet>
                     </Interface>
+
+                    <Interface name="PEEK_TLM" shortDescription="Memory peek telemetry interface" type="CFE_SB/Telemetry">
+                        <GenericTypeMapSet>
+                            <GenericTypeMap name="TelemetryDataType" type="PeekPacket" />
+                        </GenericTypeMapSet>
+                    </Interface>
+
+                    <Interface name="SYM_LOOKUP" shortDescription="Symbol lookup telemetry interface" type="CFE_SB/Telemetry">
+                        <GenericTypeMapSet>
+                            <GenericTypeMap name="TelemetryDataType" type="SymLookupPacket" />
+                        </GenericTypeMapSet>
+                    </Interface>
                 </RequiredInterfaceSet>
 
                 <Implementation>
@@ -372,12 +412,16 @@
                         <Variable type="BASE_TYPES/uint16" readOnly="true" name="CmdTopicId" initialValue="${CFE_MISSION/MM_CMD_TOPICID}"/>
                         <Variable type="BASE_TYPES/uint16" readOnly="true" name="SendHkTopicId" initialValue="${CFE_MISSION/MM_SEND_HK_TOPICID}"/>
                         <Variable type="BASE_TYPES/uint16" readOnly="true" name="HkTlmTopicId" initialValue="${CFE_MISSION/MM_HK_TLM_TOPICID}"/>
+                        <Variable type="BASE_TYPES/uint16" readOnly="true" name="PeekTlmTopicId" initialValue="${CFE_MISSION/MM_PEEK_TLM_TOPICID}"/>
+                        <Variable type="BASE_TYPES/uint16" readOnly="true" name="SymLookupTopicId" initialValue="${CFE_MISSION/MM_SYM_LOOKUP_TOPICID}"/>
                     </VariableSet>
 
                     <ParameterMapSet>
                         <ParameterMap interface="CMD" parameter="TopicId" variableRef="CmdTopicId" />
                         <ParameterMap interface="SEND_HK" parameter="TopicId" variableRef="SendHkTopicId" />
                         <ParameterMap interface="HK_TLM" parameter="TopicId" variableRef="HkTlmTopicId" />
+                        <ParameterMap interface="PEEK_TLM" parameter="TopicId" variableRef="PeekTlmTopicId" />
+                        <ParameterMap interface="SYM_LOOKUP" parameter="TopicId" variableRef="SymLookupTopicId" />
                     </ParameterMapSet>
                 </Implementation>
             </Component>
